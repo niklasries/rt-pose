@@ -1,2 +1,3 @@
-# rt-pose
-Real-time pose estimation pipeline with 🤗 Transformers
+# RT-Pose
+Real-time (GPU) pose estimation pipeline with 🤗 Transformers
+
