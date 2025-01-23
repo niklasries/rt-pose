@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rt-pose"
+version = "0.0.1"
+description = "Real-time (GPU) pose estimation pipeline with 🤗 Transformers"
+authors = [
+    { name = "Pavel Iakubovskii", email = "qubvel@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "torch",
+    "torchvision",
+    "transformers[vision]",
+    "loguru",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["rt_pose"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+]
+demo = [
+    "requests",
+    "Pillow",
+    "supervision",
+    "tqdm",
+    "moviepy",
+]
+
+[tool.ruff]
+line-length = 120

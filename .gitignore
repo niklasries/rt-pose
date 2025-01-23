@@ -1,3 +1,9 @@
+# Images / videos
+*.jpg
+*.jpeg
+*.png
+*.mp4
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -169,3 +175,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# ruff
+.ruff_cache/
