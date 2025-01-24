@@ -98,8 +98,8 @@ if __name__ == "__main__":
 
     # Load pose estimation pipeline
     pipeline = PoseEstimationPipeline(
-        object_detection_checkpoint=args.detection,
-        pose_estimation_checkpoint=args.pose,
+        object_detection_checkpoint=args.object_detection,
+        pose_estimation_checkpoint=args.pose_estimation,
         device=args.device,
         dtype=dtype,
         compile=False,
