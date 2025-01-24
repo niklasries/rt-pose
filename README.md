@@ -1,32 +1,36 @@
-# RT-Pose
+<div align="center">
+<h1> RT-Pose </h1>
+
 Real-time (GPU) pose estimation pipeline with 🤗 Transformers
 
-<!-- ![](./rt_pose_break_dance_v2_annotated.gif) -->
-![](https://huggingface.co/datasets/qubvel-hf/assets/blob/main/rt_pose_break_dance_v2_annotated.gif)
+![](https://github.com/qubvel/assets/blob/main/rt_pose_break_dance_v2_annotated.gif)
+![](https://github.com/qubvel/assets/blob/main/rt_pose_american_football_annotated.gif)
 
-<p align="center">
-<a><img src="https://huggingface.co/datasets/qubvel-hf/assets/resolve/main/rt_pose_break_dance_v2_annotated.gif"></a> <img src="https://huggingface.co/datasets/qubvel-hf/assets/resolve/main/rt_pose_american_football_annotated.gif"></a>
-</p>
+</div>
 
-### Installation
+## Installation
 
-It's recommended to run installation with `uv` for faster installation.
+1. [Optional] It's recommended to run with `uv` for faster installation.
 First, install `uv`:
 
 ```bash
 pip install uv
 ```
 
-Install `rt_pose` (you can ignore `uv` in case you want to install with pure `pip`)
+2. Install `rt_pose` (you can ignore `uv` in case you want to install with pure `pip`)
 
 ```bash
 uv pip install rt-pose        # with minimal dependencies
 uv pip install rt-pose[demo]  # with additional dependencies to run `scripts/` and `notebooks/`
 ```
 
-### Quick start
+## Quick start
 
-**Using in Python:**
+ - [Python snippet](#python-snippet)
+ - [Script to run on image](#run-pose-estimation-on-image)
+ - [Script to run on video](#run-pose-estimation-on-video)
+
+### Python snippet
 
 ```python
 import torch
@@ -55,17 +59,17 @@ output = pipeline(image)
 # see ./scripts/run_on_image.py
 ```
 
-Another object detectors checkpoints on the Hub:
+Other object detection checkpoints on the Hub:
 
 - [RT-DETR](https://huggingface.co/PekingU)
 - [DETR](https://huggingface.co/models?other=detr)
 - [YOLOS](https://huggingface.co/models?other=yolos)
 
-Another pose-estimation models on the Hub:
+Other pose estimation checkpoints on the Hub:
 
 - [ViTPose and ViTPose++](https://huggingface.co/usyd-community)
 
-**Run pose estimation on image:**
+### Run pose estimation on image
 
  - `--input` can be URL or path
 
@@ -76,11 +80,11 @@ python scripts/run_on_image.py \
     --device "cuda:0"
 ```
 
-**Run pose estimation on video:**
+### Run pose estimation on video
 
  - `--input` can be URL or path
- - `--dtype` it's recommended to run in `bfloat16` precision to get best precision/speed tradeoff
- - `--compile` you can compile models in pipline to get even more speed up (x2), but compilation can be quite long, so it make sense 
+ - `--dtype` it's recommended to run in `bfloat16` precision to get the best precision/speed tradeoff
+ - `--compile` you can compile models in the pipeline to get even more speed up (x2), but compilation can be quite long, so it makes sense 
     to activate for long videos only.
 
 ```bash
@@ -90,9 +94,3 @@ python scripts/run_on_video.py \
     --device "cuda:0" \
     --dtype bfloat16
 ```
-
-python scripts/run_on_video.py \
-    --input "rt_pose_american_football.mov" \
-    --output "results/rt_pose_american_football_annotated.mp4" \
-    --device "cuda:0" \
-    --dtype bfloat16
