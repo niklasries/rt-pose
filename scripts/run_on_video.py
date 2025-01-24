@@ -1,35 +1,11 @@
-"""
-Run pose estimation on the image. To run this script you need to install as follows:
-
-```bash
-uv pip install rt-pose[demo]
-```
-"""
-
-import os
 import torch
+import moviepy
 import argparse
-import requests
 import numpy as np
 import supervision as sv
 
-from PIL import Image
-from loguru import logger
+from tqdm import tqdm
 from rt_pose import PoseEstimationPipeline, PoseEstimationOutput
-
-
-def load_image(path_or_url: str) -> np.ndarray:
-    """
-    Load image from path or URL.
-    """
-    if os.path.exists(path_or_url):
-        image = Image.open(path_or_url)
-    elif requests.get(path_or_url).status_code == 200:
-        image = Image.open(requests.get(path_or_url, stream=True).raw)
-    else:
-        raise ValueError(f"Failed to load image from `{path_or_url}`")
-
-    return np.array(image)
 
 
 def visualize_output(image: np.ndarray, output: PoseEstimationOutput, confidence: float = 0.3) -> np.ndarray:
@@ -63,26 +39,28 @@ def visualize_output(image: np.ndarray, output: PoseEstimationOutput, confidence
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--input", type=str, required=True, help="Path to image or URL to image")
-    parser.add_argument("-o", "--output", type=str, required=True, help="Path to save directory")
+    parser.add_argument("-i", "--input", type=str, required=True, help="Path to input video")
+    parser.add_argument("-o", "--output", type=str, required=True, help="Path to output video")
     parser.add_argument(
         "-od",
         "--object-detection",
         type=str,
         default="PekingU/rtdetr_r50vd_coco_o365",
-        help="Hugging face repository name to object detection checkpoint",
+        help="Object detection checkpoint",
     )
     parser.add_argument(
         "-pe",
         "--pose-estimation",
         type=str,
         default="usyd-community/vitpose-plus-small",
-        help="Hugging face repository name to pose estimation checkpoint",
+        help="Pose estimation checkpoint",
     )
-    parser.add_argument("-d", "--device", type=str, default="cuda", help="Device to run pipeline on")
-    parser.add_argument("-t", "--dtype", type=str, default="bfloat16", help="Data type to run pipeline on")
+    parser.add_argument("-d", "--device", type=str, default="cuda", help="Device to run on")
+    parser.add_argument("-t", "--dtype", type=str, default="bfloat16", help="Data type to run on")
+    parser.add_argument("--compile", action="store_true", help="Compile models in the pipeline")
     args = parser.parse_args()
 
+    # Validate data type
     dtypes = {
         "float16": torch.float16,
         "bfloat16": torch.bfloat16,
@@ -93,29 +71,32 @@ if __name__ == "__main__":
 
     dtype = dtypes[args.dtype]
 
-    # Load image
-    image = load_image(args.input)
+    # Load video
+    clip = moviepy.VideoFileClip(args.input)
 
     # Load pose estimation pipeline
     pipeline = PoseEstimationPipeline(
-        object_detection_checkpoint=args.detection,
-        pose_estimation_checkpoint=args.pose,
+        object_detection_checkpoint=args.object_detection,
+        pose_estimation_checkpoint=args.pose_estimation,
         device=args.device,
         dtype=dtype,
-        compile=False,
+        compile=args.compile,
     )
+    if args.compile:
+        # This will warmup the model for batch_size 0..10
+        pipeline.warmup(max_num_persons=10)
 
-    # Run pose estimation on image
-    output = pipeline(image)
+    # Run pose estimation on video
+    annotated_frames = []
+    for frame in tqdm(clip.iter_frames(), total=clip.n_frames):
+        output = pipeline(frame)
+        annotated_frame = visualize_output(frame, output, confidence=0.3)
+        annotated_frames.append(annotated_frame)
 
-    # Visualize output
-    logger.info("Visualizing output...")
-    annotated_image = visualize_output(image, output, confidence=0.3)
+    # Save annotated frames as video with the same audio from clip
+    annotated_clip = moviepy.ImageSequenceClip(annotated_frames, fps=clip.fps)
+    annotated_clip.audio = clip.audio
 
-    logger.info(f"Saving output to `{args.output}`...")
-    dst_dir = os.path.dirname(args.output)
-    if dst_dir:
-        os.makedirs(dst_dir, exist_ok=True)
-    Image.fromarray(annotated_image).save(args.output)
-
-    logger.info("Done!")
+    dst_path = args.path.replace(".mp4", "_annotated.mp4")
+    # dst_path = args.output
+    annotated_clip.write_videofile(dst_path)
