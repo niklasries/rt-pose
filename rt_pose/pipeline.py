@@ -227,27 +227,3 @@ class PoseEstimationPipeline:
             self._run_pose_estimation_step(image_tensor, boxes_xyxy)
         end_time = time.time()
         logger.info(f"Pose estimation step warmup took {end_time - start_time:.2f} seconds")
-
-
-if __name__ == "__main__":
-    import requests
-    from PIL import Image
-
-    pipeline = PoseEstimationPipeline(
-        object_detection_checkpoint="PekingU/rtdetr_r50vd_coco_o365",
-        pose_estimation_checkpoint="usyd-community/vitpose-plus-small",
-        device="cuda",
-        dtype=torch.bfloat16,
-        compile=True,
-    )
-    pipeline.warmup()
-
-    # Let's also load an example image
-    url = (
-        "https://images.pexels.com/photos/175658/pexels-photo-175658.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-    )
-    pil_image = Image.open(requests.get(url, stream=True).raw)
-    image = np.array(pil_image)
-
-    output = pipeline(image)
-    print(output)
