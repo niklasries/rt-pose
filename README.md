@@ -3,8 +3,8 @@
 
 Real-time (GPU) pose estimation pipeline with 🤗 Transformers
 
-<img src="https://github.com/qubvel/assets/blob/main/rt_pose_break_dance_v2_annotated.gif" width="300"/>
-<img src="https://github.com/qubvel/assets/blob/main/rt_pose_american_football_annotated.gif" width="300"/>
+<img src="https://github.com/qubvel/assets/blob/main/rt_pose_break_dance_v2_annotated.gif" width="400"/>
+<img src="https://github.com/qubvel/assets/blob/main/rt_pose_american_football_annotated.gif" width="400"/>
 
 </div>
 
