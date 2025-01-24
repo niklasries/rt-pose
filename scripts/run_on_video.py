@@ -1,11 +1,20 @@
+import os
 import torch
 import moviepy
 import argparse
 import numpy as np
 import supervision as sv
+import huggingface_hub
 
 from tqdm import tqdm
 from rt_pose import PoseEstimationPipeline, PoseEstimationOutput
+
+
+def load_video(path_or_url: str) -> moviepy.VideoFileClip:
+    if "https://huggingface.co/" in path_or_url:
+        _, _, _, repo_type, user, repo, *_, filename = path_or_url.split("/")
+        path_or_url = huggingface_hub.hf_hub_download(repo_id=f"{user}/{repo}", filename=filename, repo_type="dataset")
+    return moviepy.VideoFileClip(path_or_url)
 
 
 def visualize_output(image: np.ndarray, output: PoseEstimationOutput, confidence: float = 0.3) -> np.ndarray:
@@ -72,7 +81,7 @@ if __name__ == "__main__":
     dtype = dtypes[args.dtype]
 
     # Load video
-    clip = moviepy.VideoFileClip(args.input)
+    clip = load_video(args.input)
 
     # Load pose estimation pipeline
     pipeline = PoseEstimationPipeline(
@@ -96,7 +105,7 @@ if __name__ == "__main__":
     # Save annotated frames as video with the same audio from clip
     annotated_clip = moviepy.ImageSequenceClip(annotated_frames, fps=clip.fps)
     annotated_clip.audio = clip.audio
-
-    dst_path = args.path.replace(".mp4", "_annotated.mp4")
-    # dst_path = args.output
-    annotated_clip.write_videofile(dst_path)
+    dst_dir = os.path.dirname(args.output)
+    if dst_dir:
+        os.makedirs(dst_dir, exist_ok=True)
+    annotated_clip.write_videofile(args.output)
