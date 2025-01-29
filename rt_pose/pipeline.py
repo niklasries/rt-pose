@@ -64,8 +64,6 @@ class PoseEstimationPipeline:
             self._compile_models()
 
         logger.info("Pipeline initialized successfully!")
-        if self.compile:
-            logger.info("Model compilation is enabled, don't forget to call `pipeline.warmup()` method!")
 
     @staticmethod
     def _load_detector(checkpoint: str, device: str, dtype: torch.dtype):
@@ -87,12 +85,13 @@ class PoseEstimationPipeline:
 
     def _compile_models(self):
         logger.info("Applying compilation to models...")
-        self.detector = torch.compile(self.detector, fullgraph=True, mode="reduce-overhead")
-        self.pose_estimator = torch.compile(self.pose_estimator, fullgraph=True, mode="reduce-overhead", dynamic=True)
+        self.detector = torch.compile(self.detector, mode="reduce-overhead")
+        self.pose_estimator = torch.compile(self.pose_estimator, mode="reduce-overhead", dynamic=True)
+        logger.info("Model compilation is enabled, don't forget to call `pipeline.warmup()` method!")
 
     def _run_detection_step(self, image: torch.Tensor) -> torch.Tensor:
         """
-        Run detection step of the pipeline. Detects person boxes in the image.
+        Run the detection step of the pipeline. Detects person boxes in the image.
 
         Args:
             image: RGB image with shape (H, W, 3) to run detection on.
