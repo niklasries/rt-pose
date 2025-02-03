@@ -26,9 +26,14 @@ uv pip install rt-pose[demo]  # with additional dependencies to run `scripts/` a
 
 ## Quick start
 
+ - [Notebooks](#notebooks)
  - [Python snippet](#python-snippet)
  - [Script to run on image](#run-pose-estimation-on-image)
  - [Script to run on video](#run-pose-estimation-on-video)
+
+### Notebooks
+ - Walkthrough for optimizations done - [notebook](./notebooks/optimizing_pose_estimation_pipeline.ipynb)
+ - Run inference on video - [notebook](./notebooks/video_inference.ipynb)
 
 ### Python snippet
 
