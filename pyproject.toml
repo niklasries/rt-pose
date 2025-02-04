@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "rt-pose"
-version = "0.0.1"
+version = "0.0.3"
 description = "Real-time (GPU) pose estimation pipeline with 🤗 Transformers"
 authors = [
     { name = "Pavel Iakubovskii", email = "qubvel@gmail.com" }
