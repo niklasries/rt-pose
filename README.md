@@ -8,6 +8,10 @@ Real-time (GPU) pose estimation pipeline with 🤗 Transformers
 
 </div>
 
+## Notebooks
+ - 🚀🚀🚀 Walkthrough for optimizations done, speeding up the pipeline 9 -> 47 FPS - [notebook](./notebooks/optimizing_pose_estimation_pipeline.ipynb)
+ - 🎥 Run inference on video - [notebook](./notebooks/video_inference.ipynb)
+
 ## Installation
 
 1. [Optional] It's recommended to run with `uv` for faster installation.
@@ -26,14 +30,9 @@ uv pip install rt-pose[demo]  # with additional dependencies to run `scripts/` a
 
 ## Quick start
 
- - [Notebooks](#notebooks)
  - [Python snippet](#python-snippet)
  - [Script to run on image](#run-pose-estimation-on-image)
  - [Script to run on video](#run-pose-estimation-on-video)
-
-### Notebooks
- - Walkthrough for optimizations done - [notebook](./notebooks/optimizing_pose_estimation_pipeline.ipynb)
- - Run inference on video - [notebook](./notebooks/video_inference.ipynb)
 
 ### Python snippet
 
