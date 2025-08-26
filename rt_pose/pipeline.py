@@ -82,7 +82,7 @@ class PoseEstimationPipeline:
             self._compile_models()
 
         logger.info("Optimized Pipeline initialized successfully!")
-    @staticmethod
+
     def _load_detector(self, checkpoint: str):
         logger.info(f"Loading detector from `{checkpoint}`...")
         model = AutoModelForObjectDetection.from_pretrained(checkpoint, torch_dtype=self.dtype).eval()
@@ -90,7 +90,7 @@ class PoseEstimationPipeline:
         model = model.to(self.device)
         logger.info(f"Detector loaded to `{self.device}` with dtype `{self.dtype}`!")
         return model, image_processor
-    @staticmethod
+
     def _load_pose_estimator(self, checkpoint: str):
         logger.info(f"Loading pose estimator from `{checkpoint}`...")
         model = VitPoseForPoseEstimation.from_pretrained(checkpoint, torch_dtype=self.dtype).eval()
